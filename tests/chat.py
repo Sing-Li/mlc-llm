@@ -205,7 +205,7 @@ def get_tvm_model(args):
             else:
                 for i in range(inputs.shape[1]):
                     input_slice = tvm.nd.array(inputs[:, i : i + 1], device=device)
-                    logits, kv_cache = vm["decoding"](
+                    logits, kv_cache = vm["decode"](
                         input_slice, seq_len_shape, self.kv_cache, const_params
                     )
             self.kv_cache = kv_cache
