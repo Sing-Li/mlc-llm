@@ -1,3 +1,4 @@
+# pylint: disable=missing-docstring
 import argparse
 import json
 import os
@@ -183,7 +184,7 @@ def debug_dump_script(mod, name, args):
     if not args.debug_dump:
         return
     dump_path = os.path.join(args.artifact_path, "debug", name)
-    with open(dump_path, "w") as outfile:
+    with open(dump_path, "w", encoding="utf-8") as outfile:
         outfile.write(mod.script(show_meta=True))
     print(f"Dump mod to {dump_path}")
 
@@ -242,22 +243,21 @@ def mod_transform_before_build(
 
     if args.quantization.mode != "no":
         if ARGS.model.startswith("rwkv-"):
-            mod = mlc_llm.transform.RWKVQuantize(
+            mod = mlc_llm.transform.RWKVQuantize(  # pylint: disable=not-callable
                 mode=args.quantization.mode,
                 dtype=args.quantization.model_dtype,
             )(mod)
         else:
-            mod = mlc_llm.transform.GroupQuantize(
+            mod = mlc_llm.transform.GroupQuantize(  # pylint: disable=not-callable
                 group_size=40 if args.quantization.mode.endswith("3") else 32,
                 sym=args.quantization.sym,
                 mode=args.quantization.mode,
                 storage_nbit=args.quantization.storage_nbit,
                 dtype=args.quantization.model_dtype,
             )(mod)
-    mod = mlc_llm.transform.FuseTransposeMatmul()(mod)
-
-    mod = relax.pipeline.get_pipeline()(mod)
-    mod = mlc_llm.transform.FuseDecodeMatmulEwise(
+    mod = mlc_llm.transform.FuseTransposeMatmul()(mod)  # pylint: disable=not-callable
+    mod = relax.pipeline.get_pipeline()(mod)  # pylint: disable=no-value-for-parameter
+    mod = mlc_llm.transform.FuseDecodeMatmulEwise(  # pylint: disable=not-callable
         args.quantization.model_dtype, args.target_kind
     )(mod)
     mod = relax.transform.DeadCodeElimination(model_names)(mod)

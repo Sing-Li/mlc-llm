@@ -329,7 +329,7 @@ class Conversation {
         }
       }
       return ret;
-    } else if (this->separator_style == SeparatorStyle::kMOSS) {
+    } else if (this->separator_style == SeparatorStyle::kRedPajamaChat) {
       std::vector<std::string> seps{this->sep, this->sep2};
       ret.push_back(this->system_);
       for (size_t i = 0; i < this->messages.size(); ++i) {
